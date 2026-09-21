@@ -18,3 +18,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 - Added RuntimeAdapter integration section to README showing how to bridge EventSink events to ask-instrumentation.
+- Added the reusable `Ask::Runtime::Testing::ExecutorContract` helper for adapter conformance tests.
+- Added independent CI, setup, and release workflows for the runtime repository.

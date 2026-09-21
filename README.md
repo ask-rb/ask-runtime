@@ -123,6 +123,38 @@ context = Ask::Runtime::ExecutionContext.new(
 See the [ask-instrumentation README](https://github.com/ask-rb/ask-instrumentation#runtime-adapter)
 for the full payload schema and event mapping.
 
+## Testing an executor
+
+Adapter gems can reuse the runtime contract assertions instead of defining
+their own compatibility checklist:
+
+```ruby
+require "ask/runtime/testing"
+
+class MyExecutorTest < Minitest::Test
+  include Ask::Runtime::Testing::ExecutorContract
+
+  def test_executor_contract
+    assert_conforms_to_runtime_contract(
+      MyExecutor.new,
+      success_call: build_success_call,
+      failure_call: build_failure_call,
+      cancelled_call: build_cancelled_call,
+      context_factory: ->(event_sink:, canceller: nil) {
+        Ask::Runtime::ExecutionContext.new(
+          event_sink: event_sink, canceller: canceller
+        )
+      }
+    )
+  end
+end
+```
+
+The helper checks the shared `ToolResult` shape, non-negative duration,
+pre-execution cancellation, lifecycle event ordering, terminal state, and
+call correlation. Backend-specific behavior should remain covered by the
+adapter's own tests.
+
 ## Contributing
 
 1. Fork it
